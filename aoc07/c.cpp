@@ -1,3 +1,4 @@
+#pragma GCC diagnostic ignored "-wpsabi"
 #include <iostream>
 #include <fstream>
 #include <vector>
