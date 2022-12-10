@@ -33,7 +33,7 @@ int main(){
         o += c*(s-(p-i)*x);
       }
       int t = s-(p-i)*x;
-      if([](int q){return (q>0)?q:-q;}(((c-1)%40)-t)<= 1) screen[c-1] = true;
+      if((uint32_t)(((c-1)%40)-t+ 1)<= 2) screen[c-1] = true;
     }
   }
 
@@ -41,7 +41,7 @@ int main(){
 
   for(int i = 0; i < 6; i++){
     for(int j = 0; j < 40; j++){
-      cout << ((screen[40*i+j])?'#':' ');
+      cout << ((screen[40*i+j])?'#':'.');
     }
     cout << endl;
   }
