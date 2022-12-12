@@ -4,8 +4,6 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include <numeric>
-
 
 using namespace std;
 
