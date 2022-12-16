@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -23,82 +24,53 @@ long long int d(s a){
 }
 
 int main(){
-  const long long int level = 2000000;
-  //const long long int level = 10;
   string l;
   ifstream f("input");
 
-  
-
   vector<s> scan;
-  long long int xmax= -1000000;
-  long long int xmin = 100000000000;
-
 
   while(getline(f,l)){
     long long int x,y,bx,by;
     sscanf(l.c_str(),"Sensor at x=%lld, y=%lld: closest beacon is at x=%lld, y=%lld", &x, &y, &bx, &by);
-    xmin = (xmin < x)?xmin:x;
-    xmax = (xmax > x)?xmax:x;
     scan.push_back(s(x,y,bx,by));
   }
 
-//  cout << xmin << "\t" << xmax << endl;
-//  long long int count = 0;
-//
-//  for(int i = xmin; i <= xmax; i++){
-//    for(auto a : scan){
-//      if(d(a) >= d(a,i,level)){
-//        count++;
-//        break;
-//      }
-//    }
-//  }
-//
-//
-//  bool flag = true;
-//
-//  while(flag){
-//    flag = false;
-//    xmin--;
-//    for(auto a : scan){
-//      if(d(a) >= d(a,xmin,level)){
-//        flag = true;
-//        break;
-//      }
-//    }
-//    count++;
-//  }
-//
-//  flag = true;
-//  while(flag){
-//    flag = false;
-//    xmax++;
-//    for(auto a : scan){
-//      if(d(a) >= d(a,xmax,level)){
-//        flag = true;
-//        break;
-//      }
-//    }
-//    count++;
-//  }
-//
-//  cout << count << endl;
+  set<long long int> lvl;
+  long long int p2r = 0;
 
-  for(long long int i = 0; i <= 4000000; i++){
-    for(long long int j = 0; j <= 4000000; j++){
-      bool flag = true;
-      for(auto a : scan){
-        if(d(a)>= d(a,i,j)){
-          flag = false;
-          break;
-        }
+  for(auto a : scan){
+    for(int i = 0; d(a,a.x+i,2000000)<=d(a); i++){
+	    if(!(a.bx == a.x+i && a.by == 2000000))lvl.insert(a.x+i);
+	    if(!(a.bx == a.x-i && a.by == 2000000))lvl.insert(a.x-i);
+    }
+
+    if(!p2r){
+      vector<pair<long long int,long long int>> cand;
+      for(int i = 0; i < d(a); i++){
+              cand.push_back(pair<long long int, long long int>(a.x+d(a)-i+1,a.y+i));
+              cand.push_back(pair<long long int, long long int>(a.x-d(a)+i-1,a.y-i));
+              cand.push_back(pair<long long int, long long int>(a.x+i,a.y+d(a)-i+1));
+              cand.push_back(pair<long long int, long long int>(a.x-i,a.y-d(a)+i-1));
       }
-      if(flag){
-        cout << (i * 4000000 + j) << endl;
-        return 0;
+      for(auto x : cand){
+              if(x.first > 4000000 || x.second > 4000000 || x.first < 0 || x.second < 0) continue;
+              bool f = true;
+              for(auto b : scan){
+          	    if(d(b) >= d(b,x.first,x.second)){
+          		    f = false;
+          		    break;
+          	    }
+              }
+              if(f){
+          	    p2r = 4000000*x.first + x.second;
+          	    break;
+              }
       }
     }
   }
+
+  cout << lvl.size() << endl;
+  cout << p2r << endl;
+
   return 0;
 }
